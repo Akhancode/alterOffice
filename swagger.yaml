@@ -1,0 +1,129 @@
+swagger: '2.0'
+info:
+  title: Custom URL Shortener API
+  description: |
+    A scalable URL Shortener API with advanced analytics, Google Sign-In authentication, and rate limiting.
+  version: 1.0.0
+servers:
+  - url: http://localhost:9000
+tags:
+  - name: Authentication
+    description: User authentication using Google Sign-In.
+  - name: URLs
+    description: URL shortening and management endpoints.
+
+securityDefinitions:
+  googleAuth:
+    type: oauth2
+    authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+    tokenUrl: https://oauth2.googleapis.com/token
+    flow: implicit
+    scopes:
+      openid: OpenID Connect scope
+      profile: Access to the user's basic profile
+      email: Access to the user's email address # Or your production URL
+
+
+
+security:
+  - google_oauth: []
+
+paths:
+  /auth/google:
+     get:
+      summary: Initiate Google Login
+      description: Clicking the "Try it out" button here will trigger the redirect to Google's login page.
+      responses:
+        "302":
+          description: Redirects to Google's OAuth login page.
+      tags:
+        - Authentication
+      x-codeSamples:
+        - lang: JavaScript
+          source: |
+            fetch('/auth/google', { method: 'GET' })
+              .then(res => {
+                if (res.redirected) {
+                  window.location.href = res.url;
+                }
+              })
+              .catch(err => console.error('Error:', err));
+  /api/shorten:
+    post:
+      tags:
+        - URLs
+      summary: Create a new short URL
+      description: Generate a short URL for a given long URL.
+      parameters:
+        - in: body
+          name: body
+          description: URL shortening request.
+          required: true
+          schema:
+            type: object
+            properties:
+              longUrl:
+                type: string
+                description: The original long URL to shorten.
+              customAlias:
+                type: string
+                description: Custom alias for the short URL (optional).
+              topic:
+                type: string
+                description: Topic category for grouping links (optional).
+      responses:
+        '201':
+          description: Short URL created successfully.
+          schema:
+            type: object
+            properties:
+              shortUrl:
+                type: string
+                description: The generated short URL.
+              createdAt:
+                type: string
+                format: date-time
+              topic:
+                type: string
+        '400':
+          description: Invalid input.
+        '429':
+          description: Rate limit exceeded.
+
+  /api/analytics:
+    get:
+      tags:
+        - URLs
+      summary: Get analytics for all URLs
+      description: Fetch detailed analytics for all short URLs.
+      responses:
+        '200':
+          description: Analytics data retrieved successfully.
+          schema:
+            type: object
+            properties:
+              totalClicks:
+                type: integer
+                description: Total number of clicks across all URLs.
+              urls:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    shortUrl:
+                      type: string
+                    clicks:
+                      type: integer
+                    topic:
+                      type: string
+        '401':
+          description: Unauthorized.
+
+definitions:
+  ErrorResponse:
+    type: object
+    properties:
+      message:
+        type: string
+      code:
+        type: integer
