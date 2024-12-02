@@ -3,6 +3,10 @@ const Analytics = require("../model/analytics.model");
 const geoip = require("geoip-lite");
 const requestIp = require("request-ip");
 const moment = require("moment");
+const {
+  getDeviceType,
+  getOperatingSystem,
+} = require("../utils/helperFunction/helper");
 
 const redirectShortUrlService = async (alias, req) => {
   const urlRecord = await Url.findOne({ shortUrl: alias });
@@ -14,9 +18,28 @@ const redirectShortUrlService = async (alias, req) => {
   const userIp = requestIp.getClientIp(req);
   const geo = geoip.lookup(userIp);
 
+  const device = getDeviceType(req.headers["user-agent"]);
+  const os = getOperatingSystem(req.headers["user-agent"]);
+
+  // console.log({
+  //   shortUrl: alias,
+  //   userAgent: req.headers["user-agent"],
+  //   device,
+  //   os,
+  //   ipAddress: userIp,
+  //   geoLocation: geo
+  //     ? {
+  //         country: geo.country,
+  //         region: geo.region,
+  //         city: geo.city,
+  //       }
+  //     : {},
+  // });
   const analyticsData = new Analytics({
     shortUrl: alias,
     userAgent: req.headers["user-agent"],
+    device,
+    os,
     ipAddress: userIp,
     geoLocation: geo
       ? {
@@ -71,7 +94,7 @@ async function getUrlAnalytics(alias) {
     { $match: { shortUrl: alias } },
     {
       $group: {
-        _id: "$userAgent",
+        _id: "$os",
         uniqueClicks: { $sum: 1 },
         uniqueUsers: { $addToSet: "$ipAddress" },
       },
@@ -88,7 +111,7 @@ async function getUrlAnalytics(alias) {
     { $match: { shortUrl: alias } },
     {
       $group: {
-        _id: "$userAgent",
+        _id: "$device",
         uniqueClicks: { $sum: 1 },
         uniqueUsers: { $addToSet: "$ipAddress" },
       },
@@ -176,8 +199,8 @@ const getOverallAnalytics = async (userId) => {
         _id: "$shortUrl",
         totalClicks: { $sum: 1 },
         uniqueClicks: { $addToSet: "$ipAddress" },
-        osType: { $addToSet: "$userAgent" },
-        deviceType: { $addToSet: "$userAgent" },
+        osType: { $addToSet: "$os" },
+        deviceType: { $addToSet: "$device" },
       },
     },
     {
@@ -223,7 +246,7 @@ const getOverallAnalytics = async (userId) => {
     { $match: { shortUrl: { $in: shortUrlsIds } } },
     {
       $group: {
-        _id: "$userAgent",
+        _id: "$os",
         uniqueClicks: { $sum: 1 },
         uniqueUsers: { $addToSet: "$ipAddress" },
       },
@@ -242,7 +265,7 @@ const getOverallAnalytics = async (userId) => {
     { $match: { shortUrl: { $in: shortUrlsIds } } },
     {
       $group: {
-        _id: "$userAgent",
+        _id: "$device",
         uniqueClicks: { $sum: 1 },
         uniqueUsers: { $addToSet: "$ipAddress" },
       },

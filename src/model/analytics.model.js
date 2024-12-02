@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const analyticsSchema = new mongoose.Schema({
   shortUrl: { type: String, required: true },
   userAgent: { type: String },
+  device: { type: String },
+  os: { type: String },
   ipAddress: { type: String },
   geoLocation: {
     country: { type: String },
