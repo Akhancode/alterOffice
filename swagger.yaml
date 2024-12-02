@@ -158,12 +158,220 @@ paths:
                       type: string
         '401':
           description: Unauthorized.
+  /api/analytics/{alias}:
+    get:
+      summary: "Retrieve detailed analytics for a short URL"
+      description: "Fetch detailed analytics including total clicks, unique clicks, clicks by date, OS type, device type, and geo-location for the specified short URL alias."
+      parameters:
+        - name: alias
+          in: path
+          required: true
+          type: string
+          description: "The unique alias for the shortened URL."
+      responses:
+        200:
+          description: "Analytics data for the short URL."
+          schema:
+            type: object
+            properties:
+              totalClicks:
+                type: integer
+                example: 1234
+              uniqueClicks:
+                type: integer
+                example: 987
+              clicksByDate:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      example: "2024-11-25"
+                    count:
+                      type: integer
+                      example: 50
+              osType:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    osName:
+                      type: string
+                      example: "Windows"
+                    uniqueClicks:
+                      type: integer
+                      example: 150
+                    uniqueUsers:
+                      type: integer
+                      example: 120
+              deviceType:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    deviceName:
+                      type: string
+                      example: "mobile"
+                    uniqueClicks:
+                      type: integer
+                      example: 350
+                    uniqueUsers:
+                      type: integer
+                      example: 330
+              geoLocation:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    geoLocation:
+                      type: object
+                      properties:
+                        country:
+                          type: string
+                          example: "US"
+                        region:
+                          type: string
+                          example: "California"
+                        city:
+                          type: string
+                          example: "San Francisco"
+                    uniqueClicks:
+                      type: integer
+                      example: 100
+                    uniqueUsers:
+                      type: integer
+                      example: 80
+        400:
+          description: "Bad request. Invalid alias or missing parameter."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid alias or missing parameter."
+        404:
+          description: "Short URL alias not found."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Short URL alias not found."
+        500:
+          description: "Internal server error"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Internal server error"
+  /api/analytics/topic/{topic}:
+    get:
+      summary: "Retrieve detailed analytics for a short URL"
+      description: "Fetch detailed analytics including total clicks, unique clicks, clicks by date, OS type, device type, and geo-location for the specified short URL alias."
+      parameters:
+        - name: topic
+          in: path
+          required: true
+          type: string
+          description: "The unique alias for the shortened URL."
+      responses:
+        200:
+          description: "Analytics data for the short URL."
+          schema:
+            type: object
+            properties:
+              totalClicks:
+                type: integer
+                example: 1234
+              uniqueClicks:
+                type: integer
+                example: 987
+              clicksByDate:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      example: "2024-11-25"
+                    count:
+                      type: integer
+                      example: 50
+              osType:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    osName:
+                      type: string
+                      example: "Windows"
+                    uniqueClicks:
+                      type: integer
+                      example: 150
+                    uniqueUsers:
+                      type: integer
+                      example: 120
+              deviceType:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    deviceName:
+                      type: string
+                      example: "mobile"
+                    uniqueClicks:
+                      type: integer
+                      example: 350
+                    uniqueUsers:
+                      type: integer
+                      example: 330
+              geoLocation:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    geoLocation:
+                      type: object
+                      properties:
+                        country:
+                          type: string
+                          example: "US"
+                        region:
+                          type: string
+                          example: "California"
+                        city:
+                          type: string
+                          example: "San Francisco"
+                    uniqueClicks:
+                      type: integer
+                      example: 100
+                    uniqueUsers:
+                      type: integer
+                      example: 80
+        400:
+          description: "Bad request. Invalid alias or missing parameter."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid alias or missing parameter."
+        404:
+          description: "Short URL alias not found."
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Short URL alias not found."
+        500:
+          description: "Internal server error"
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Internal server error"
 
-definitions:
-  ErrorResponse:
-    type: object
-    properties:
-      message:
-        type: string
-      code:
-        type: integer

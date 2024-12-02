@@ -5,7 +5,8 @@ const { createShortUrlService } = require("../services/url.service.js");
 exports.createShortUrl = async (req, res, next) => {
   try {
     const { longUrl, customAlias, topic } = req.body;
-    const result = await createShortUrlService(longUrl, customAlias, topic);
+    const userId = req.user.id
+    const result = await createShortUrlService(longUrl, customAlias, topic,userId);
 
     res.status(201).json(result);
   } catch (error) {
@@ -16,6 +17,7 @@ exports.createShortUrl = async (req, res, next) => {
 exports.redirectShortUrl = async (req, res, next) => {
   try {
     const { alias } = req.params;
+   
     const longUrl = await redirectShortUrlService(alias, req);
     const isSwagger = String(req.get("Referer"))?.includes("api-docs");
     if (isSwagger) {
