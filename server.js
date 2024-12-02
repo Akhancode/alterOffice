@@ -37,7 +37,19 @@ app.use(bodyParser.json());
 
 // SWAGGER MIDDLEWARE FOR DOCUMENTATION
 const swaggerDocument = YAML.load("./swagger.yaml");
-app.use("/api-docs", swaggerui.serve, swaggerui.setup(swaggerDocument));
+app.use(
+  "/api-docs",
+  swaggerui.serve,
+  swaggerui.setup(swaggerDocument, {
+    swaggerOptions: {
+      requestInterceptor: (req) => {
+        // Ensure redirects are processed
+        req.redirects = true;
+        return req;
+      },
+    },
+  })
+);
 app.use(monitor_api);
 
 //routes

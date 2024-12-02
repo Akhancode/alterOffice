@@ -89,7 +89,47 @@ paths:
           description: Invalid input.
         '429':
           description: Rate limit exceeded.
-
+  /api/shorten/{alias}:
+    get:
+      summary: Redirect Short URL
+      description: Redirects a short URL alias to its original long URL
+      parameters:
+        - in: path
+          name: alias
+          required: true
+          schema:
+            type: string
+          description: The unique alias for the short URL
+          example: abc123
+      responses:
+        '302':
+          description: Successful redirection to the original long URL
+          headers:
+            Location:
+              schema:
+                type: string
+                description: The original long URL destination
+              example: https://www.example.com/original-long-url
+        '404':
+          description: Short URL alias not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Short URL not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Internal server error
   /api/analytics:
     get:
       tags:

@@ -1,16 +1,17 @@
 const shortid = require("shortid");
 const URL = require("../model/urls.model");
+const { CustomError } = require("../utils/errors/error");
 
 const createShortUrlService = async (longUrl, customAlias, topic) => {
   if (!longUrl || !/^https?:\/\/[^\s/$.?#].[^\s]*$/.test(longUrl)) {
-    throw new Error("Invalid URL format");
+    throw new CustomError("Invalid URL format",400);
   }
 
   const shortUrl = customAlias || shortid.generate();
 
   const existingUrl = await URL.findOne({ shortUrl });
   if (existingUrl) {
-    throw new Error("Alias already taken, please choose another one.");
+    throw new Error("Alias already taken, please choose another one.",400);
   }
 
   const newUrl = new URL({
