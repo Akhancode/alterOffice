@@ -13,20 +13,11 @@ tags:
     description: URL shortening and management endpoints.
 
 securityDefinitions:
-  googleAuth:
-    type: oauth2
-    authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
-    tokenUrl: https://oauth2.googleapis.com/token
-    flow: implicit
-    scopes:
-      openid: OpenID Connect scope
-      profile: Access to the user's basic profile
-      email: Access to the user's email address # Or your production URL
-
-
-
-security:
-  - google_oauth: []
+  accessToken:
+    type: apiKey
+    in: header
+    name: Authorization
+    description: "Use the 'accessToken' in the header for authorization. Example: 'Authorization: Bearer <access_token>'"
 
 paths:
   /auth/google:
@@ -52,6 +43,8 @@ paths:
     post:
       tags:
         - URLs
+      security:
+        - accessToken: []
       summary: Create a new short URL
       description: Generate a short URL for a given long URL.
       parameters:
@@ -91,8 +84,12 @@ paths:
           description: Rate limit exceeded.
   /api/shorten/{alias}:
     get:
+      tags:
+        - URLs
       summary: Redirect Short URL
       description: Redirects a short URL alias to its original long URL
+      security:
+        - accessToken: []
       parameters:
         - in: path
           name: alias
@@ -133,7 +130,9 @@ paths:
   /api/analytics:
     get:
       tags:
-        - URLs
+        - Analytics
+      security:
+        - accessToken: []
       summary: Get analytics for all URLs
       description: Fetch detailed analytics for all short URLs.
       responses:
@@ -161,6 +160,10 @@ paths:
   /api/analytics/{alias}:
     get:
       summary: "Retrieve detailed analytics for a short URL"
+      tags:
+        - Analytics
+      security:
+        - accessToken: []
       description: "Fetch detailed analytics including total clicks, unique clicks, clicks by date, OS type, device type, and geo-location for the specified short URL alias."
       parameters:
         - name: alias
@@ -268,8 +271,12 @@ paths:
                 example: "Internal server error"
   /api/analytics/topic/{topic}:
     get:
+      tags:
+        - Analytics
       summary: "Retrieve detailed analytics for a short URL"
       description: "Fetch detailed analytics including total clicks, unique clicks, clicks by date, OS type, device type, and geo-location for the specified short URL alias."
+      security:
+        - accessToken: []
       parameters:
         - name: topic
           in: path
@@ -374,4 +381,75 @@ paths:
               error:
                 type: string
                 example: "Internal server error"
-
+  /api/analytics/overall:
+    get:
+      tags:
+        - Analytics
+      summary: Retrieve overall analytics for all short URLs
+      description: Retrieve overall analytics for all short URLs created by the authenticated user, providing a comprehensive view of their link performance.
+      operationId: getOverallAnalytics
+      security:
+        - accessToken: []  # Assuming Bearer token authentication for the user
+      responses:
+        '200':
+          description: Successfully retrieved analytics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalUrls:
+                    type: integer
+                    description: Total number of short URLs created by the user.
+                  totalClicks:
+                    type: integer
+                    description: Total number of clicks across all URLs created by the user.
+                  uniqueClicks:
+                    type: integer
+                    description: Total number of unique users who accessed any of the user's short URLs.
+                  clicksByDate:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                          description: Date of the clicks
+                        totalClicks:
+                          type: integer
+                          description: Total number of clicks on that day
+                  osType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        osName:
+                          type: string
+                          description: Name of the operating system (e.g., Windows, macOS, Linux, iOS, Android)
+                        uniqueClicks:
+                          type: integer
+                          description: Number of unique clicks for that OS
+                        uniqueUsers:
+                          type: integer
+                          description: Number of unique users for that OS
+                  deviceType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        deviceName:
+                          type: string
+                          description: Name of the device used (e.g., mobile, desktop)
+                        uniqueClicks:
+                          type: integer
+                          description: Number of unique clicks for that device type
+                        uniqueUsers:
+                          type: integer
+                          description: Number of unique users for that device type
+        '401':
+          description: Unauthorized - Missing or invalid authentication token
+        '500':
+          description: Internal Server Error - Something went wrong on the server
+      tags:
+        - Analytics

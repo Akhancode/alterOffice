@@ -10,8 +10,8 @@ const authMiddleware = require("../middleware/authMiddlware");
 
 
 
-router.use("/api/shorten",shortUrlRoute);
-router.use("/api/analytics",analyticsRoute);
+router.use("/api/shorten",authMiddleware,shortUrlRoute);
+router.use("/api/analytics",authMiddleware,analyticsRoute);
 router.use("/api/user",authMiddleware,userRoute);
 
 router.use("/auth",authRoute);

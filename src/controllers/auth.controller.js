@@ -8,7 +8,8 @@ const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
 // auth a user
 exports.googleAuth = async (req, res, next) => {
   try {
-    const googlecode = req.query?.code;
+    const googlecode = req.query?.code || req.query.access_token;
+    console.log(req.query)
     if (!googlecode) {
       throw new CustomError("googleAccessToken is required", 400);
     }

@@ -37,18 +37,19 @@ app.use(bodyParser.json());
 
 // SWAGGER MIDDLEWARE FOR DOCUMENTATION
 const swaggerDocument = YAML.load("./swagger.yaml");
+const swaggerOptions = {
+  swaggerOptions: {
+    oauth2RedirectUrl: process.env.GOOGLE_REDIRECT_URI,
+    initOAuth: {
+      clientId: process.env.GOOGLE_CLIENTID,
+      scopes: "profile email",
+    },
+  },
+};
 app.use(
   "/api-docs",
   swaggerui.serve,
-  swaggerui.setup(swaggerDocument, {
-    swaggerOptions: {
-      requestInterceptor: (req) => {
-        // Ensure redirects are processed
-        req.redirects = true;
-        return req;
-      },
-    },
-  })
+  swaggerui.setup(swaggerDocument, swaggerOptions)
 );
 app.use(monitor_api);
 
