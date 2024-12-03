@@ -7,10 +7,16 @@ const {
   getDeviceType,
   getOperatingSystem,
 } = require("../utils/helperFunction/helper");
+const { getCacheFromRedis, setCacheData } = require("../utils/redis/redis");
 
 const redirectShortUrlService = async (alias, req) => {
-  const urlRecord = await Url.findOne({ shortUrl: alias });
+  var urlRecord = await getCacheFromRedis(req);
+  if (!urlRecord) {
+    urlRecord = await Url.findOne({ shortUrl: alias });
 
+    const cacheKey = req.originalUrl;
+    await setCacheData(cacheKey, urlRecord);
+  }
   if (!urlRecord) {
     throw new Error("Short URL not found");
   }

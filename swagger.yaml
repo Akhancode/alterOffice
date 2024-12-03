@@ -127,36 +127,6 @@ paths:
                   message:
                     type: string
                     example: Internal server error
-  /api/analytics:
-    get:
-      tags:
-        - Analytics
-      security:
-        - accessToken: []
-      summary: Get analytics for all URLs
-      description: Fetch detailed analytics for all short URLs.
-      responses:
-        '200':
-          description: Analytics data retrieved successfully.
-          schema:
-            type: object
-            properties:
-              totalClicks:
-                type: integer
-                description: Total number of clicks across all URLs.
-              urls:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    shortUrl:
-                      type: string
-                    clicks:
-                      type: integer
-                    topic:
-                      type: string
-        '401':
-          description: Unauthorized.
   /api/analytics/{alias}:
     get:
       summary: "Retrieve detailed analytics for a short URL"

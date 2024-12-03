@@ -9,6 +9,7 @@ const swaggerui = require("swagger-ui-express");
 const YAML = require("yamljs");
 const bodyParser = require("body-parser");
 const { monitor_api } = require("./src/middleware/monitor-api.js");
+const initializeRedisClient = require("./src/config/redis.js");
 
 const PORT = process.env.PORT;
 
@@ -71,6 +72,7 @@ mongoose
   })
   .then(() => {
     console.log("Connected to MongoDB");
+    initializeRedisClient()
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((error) => console.error("MongoDB connection error:", error));
