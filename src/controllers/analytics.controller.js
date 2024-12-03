@@ -21,6 +21,7 @@ exports.getAnalytics = async (req, res) => {
 exports.getOverallAnalyticsController = async (req, res, next) => {
   try {
     const userId = req?.user?.id;
+    console.log("overall----------------------------------------")
     const analytics = await getOverallAnalytics(userId);
     //cache
     const cacheKey = req.originalUrl;

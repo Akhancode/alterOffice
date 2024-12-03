@@ -20,11 +20,15 @@ async function getCacheFromRedis(req, res, next) {
 }
 
 async function setCacheData(key, data, expirationTime = null) {
-  const redisClient = await initializeRedisClient();
+  try {
+    const redisClient = await initializeRedisClient();
 
-  await redisClient.set(key, JSON.stringify(data), "EX", expirationTime); // Cache for 1 hour by default
+    await redisClient.set(key, JSON.stringify(data), "EX", expirationTime); // Cache for 1 hour by default
 
-  console.log(`key:${key} - stored in redis . `);
+    console.log(`key:${key} - stored in redis . `);
+  } catch (error) {
+    console.log("redis is not active : ", error.message)
+  }
 }
 
 module.exports = { getCacheFromRedis, setCacheData };

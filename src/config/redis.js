@@ -1,19 +1,19 @@
 const { createClient } = require("redis");
 
 let redisClient;
-const PORT = process.env.REDIS_PORT 
-const HOST = process.env.REDIS_HOST 
+const PORT = process.env.REDIS_PORT;
+const HOST = process.env.REDIS_HOST;
 async function initializeRedisClient() {
   if (!redisClient) {
     // Configuration
     const config = {
       // url: process.env.REDIS_CONNECTION_STRING,
-      host: HOST, 
-      port: PORT,
       socket: {
+        host: HOST,
+        port: PORT,
         reconnectStrategy: (retries) => {
           console.log(`Attempting to reconnect to Redis (${retries} retries)`);
-          if (retries >= 10) {
+          if (retries >= 2) {
             return new Error("Too many retries");
           }
           return Math.min(retries * 50, 2000); // Reconnect after 50ms, 100ms, 150ms, up to 2000ms
