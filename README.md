@@ -1,73 +1,86 @@
-# Habit Tracker Backend Assessment
 
-## Overview
-The Personal Habit Tracker app helps users build and maintain daily habits by allowing them to set goals, track progress with streaks, earn rewards, and visualize their growth. With MongoDB for data storage and a RESTful API, users can manage habits, view charts, and set reminders to stay motivated in achieving their goals.
+# Custom URL Shortener API
 
-## Table of Contents
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [API Overview](#api-overview)
-- [Swagger Documentation](#swagger-documentation)
-- [License](#license)
+A scalable URL shortener API designed to simplify the sharing of long URLs. The system includes advanced analytics, user authentication via Google Sign-In, and rate limiting to ensure secure and efficient usage.
 
-## Technologies Used
-- **Node.js**: JavaScript runtime for building scalable server-side applications
-- **Express.js**: Fast, minimalist framework for Node.js, handling API routing and middleware
-- **MongoDB**: NoSQL database for flexible and scalable data storage
-- **Mongoose**: ODM library for MongoDB and Node.js
-- **JWT (JSON Web Token)**: For secure user authentication
-- **Swagger**: API documentation tool to describe the endpoints in a clear and interactive format
-- **Axios**: For making HTTP requests if testing APIs within server logic
+---
 
-## Installation
+## **Features**
 
-### Prerequisites
-- **Node.js** (version 18+ recommended)
-- **MongoDB** installed locally or access to a MongoDB Atlas cloud database
+1. **URL Shortening**  
+   - Converts long URLs into short, easy-to-share links.
+2. **Custom URL Grouping**  
+   - Group links under topics such as *acquisition*, *activation*, and *retention*.
+3. **Advanced Analytics**  
+   - View analytics for individual and overall URLs (e.g., click count, region-based metrics).
+4. **User Authentication**  
+   - Secure sign-in via Google Sign-In.
+5. **Rate Limiting**  
+   - Prevents abuse by limiting the number of requests per user.
+6. **Scalability**  
+   - Dockerized architecture for efficient cloud deployment.
 
-### Steps
+---
 
-1. **Clone the repository**:
-    ```bash
-    git clone https://github.com/Akhancode/be-habitReminder-assessment.git
-    ```
+## **Tech Stack**
 
-2. **Navigate into the project directory**:
-    ```bash
-    cd be-habitReminder-assessment
-    ```
+- **Backend:** Node.js with Express.js
+- **Database:** MongoDB (for URL storage and analytics)
+- **Authentication:** Google OAuth 2.0
+- **Caching:** Redis (for rate limiting and performance optimization)
+- **Containerization:** Docker
+- **Deployment:** Compatible with AWS, GCP, or Azure
 
-3. **Install dependencies**:
-    ```bash
-    npm install
-    ```
+---
 
-4. **Set up environment variables**: Create a `.env` file in the root directory with the following variables:
-    ```plaintext
-    PORT=9000
-    MONGODB_URI=mongodb://localhost:27017/your-db-name
-    JWT_SECRET=your_secret_key
-    ```
+## **Getting Started**
 
-5. **Run the server**:
-    ```bash
-    npm start
-    ```
+### **Prerequisites**
 
-6. **Access the application**: By default, the server will run on [http://localhost:3000](http://localhost:3000).
+1. Install [Node.js](https://nodejs.org/)
+2. Set up a Google OAuth client for authentication.
+3. Set up a MongoDB instance (local or cloud-based).
+4. Install Redis for caching.and run redis 
 
-## API Overview
-Here’s an overview of the main API endpoints available in this project:
+---
 
-Each endpoint requires specific parameters and returns a structured JSON response. Refer to the Swagger documentation for detailed information.
+### **Setup Instructions**
 
-## Swagger Documentation
-The project includes Swagger for API documentation. Access the Swagger documentation locally at [http://localhost:9000/api-docs](http://localhost:9000/api-docs).
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Akhancode/alterOffice.git
+   cd alterOffice
+   ```
 
-### Screenshot
-![Swagger Documentation](./public/images/swagger-doc-screenshot.png)
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-> **Note**: Ensure that `swagger-ui-express` is installed and configured in your application for the documentation to work. 
+3. Set environment variables in a `.env` file:
+   [Download .env](https://drive.google.com/file/d/1cBiw3fUBhasKxfr1RqJ8mM5HTP63oDG2/view?usp=sharing)
 
 
-Thank you for using this project! For any questions or feedback, feel free to open an issue or contribute to the project.
+4. Start the development server:
+   ```bash
+   npm start
+   ```
+
+---
+
+## **API Endpoints**
+Swagger - documentation in http://localhost:9000/api-docs
+[![image.png](https://i.postimg.cc/15Vwj6Zq/image.png)](https://postimg.cc/gndxwxjz)
+
+### **Authentication**
+- `POST /auth/google`  
+  Authenticates a user via Google Sign-In. will give response as accesstoken please copy and paste in authenticator in swagger
+
+### **Rate Limiting**
+- Limits requests to `5` requests per minute per user.
+
+## **Contact**
+
+For any queries or suggestions, please reach out at:  
+**Email:** your-email@example.com  
+**GitHub:** [YourGitHubProfile](https://github.com/your-profile)
